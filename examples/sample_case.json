@@ -1,0 +1,8 @@
+{
+  "scope": "agent-policy",
+  "memory": "Require independent evidence before high-risk autonomous action.",
+  "provenance": "explicit-user-policy",
+  "sensitivity": "normal",
+  "ttl_seconds": null,
+  "expected_retrievable": true
+}
