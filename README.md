@@ -58,3 +58,8 @@ See [docs/RESEARCH_CONTEXT.md](docs/RESEARCH_CONTEXT.md).
 
 ## License
 MIT. See [LICENSE](LICENSE).
+
+## Extended implementation
+
+- `retention_policy.py` — provenance, sensitivity and maximum-age retrieval policy layered over the persistent memory store.
+- `tests/test_retention_policy.py` — retention-policy regression tests.
