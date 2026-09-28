@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memory-governor"
+version = "0.1.0"
+description = "Persistent-memory governance layer for AI agents with provenance, scope, sensitivity, expiry, invalidation and auditability."
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Syed Hafiz Ali"}]
+
+[tool.setuptools]
+py-modules = ["memory_governor"]

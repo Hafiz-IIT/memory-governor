@@ -1,57 +1,60 @@
 # Memory Governor
 
-> **Govern persistent AI memory as a permissioned, expiring, auditable resource—not an unlimited transcript.**
+> Persistent-memory governance layer for AI agents with provenance, scope, sensitivity, expiry, invalidation and auditability.
 
-Long-lived agents can reuse stale, over-broad, sensitive, or adversarially planted information long after it should have stopped influencing decisions. This repository isolates memory governance into a small, inspectable subsystem.
+## Status
+**Reproducible research prototype.** The repository contains executable Python, deterministic tests, and GitHub Actions CI. It does not claim production deployment or external validation.
 
-## What is implemented
+## Problem
+Long-lived agents can reuse stale, poisoned, over-broad or sensitive memories outside the context in which those memories were valid.
 
-- SQLite-backed persistent memory
-- scope-aware retrieval
-- provenance and sensitivity labels
-- TTL/expiry handling
-- explicit forgetting and superseding
-- transparent poisoning-pattern screening
-- auditable write/retrieve/forget events
+## Architecture
+Memory write → poison screen → provenance/scope/sensitivity labels → persistent store → governed retrieval → expiry/forget/supersede → audit.
 
-## Repository map
-
-| Path | Purpose |
-|---|---|
-| `memory_governor.py` | Core implementation |
-| `tests/` | Deterministic unit tests |
-| `examples/` | Reproducible synthetic/example input |
-| `docs/architecture.md` | System architecture and decision flow |
-| `docs/research-agenda.md` | Questions, experiments, and publication lineage |
-| `STATUS.md` | Implemented vs. research-stage claims |
-| `CITATION.cff` | Software citation metadata |
-| `NOTICE.md` | Scope and use notice |
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component responsibilities and invariants.
 
 ## Quick start
-
 ```bash
 python -m unittest discover -s tests -v
 python memory_governor.py
 ```
 
-The current prototype uses only the Python standard library unless the implementation itself states otherwise.
+## What is implemented
+- SQLite persistence
+- Scope-aware retrieval
+- Sensitivity filtering
+- TTL expiry
+- Explicit forgetting and supersession
+- Transparent poison-pattern screen
+- Audit log
+- Deterministic tests and CI
 
-## Architecture in one line
+## Evaluation
+Tests target cross-scope leakage, stale-memory retrieval, poisoning rejection, supersession correctness, and audit completeness.
 
-**memory input → poison screen → scope + sensitivity policy → persistent store → freshness filter → retrieval → audit**
+See [docs/EVALUATION.md](docs/EVALUATION.md) for the protocol and falsification criteria.
 
 ## Research lineage
+This repo is grounded in the recovered long-running research/project discussions and maps to:
+- *Privacy-Preserving Architectures for Consumer Applications*
+- *Human–AI Symbiosis for Future Systems*
+- *Scalable Architectures for Distributed Intelligent Agents*
 
-This work belongs to the Personal AI / Life OS / ~haf.s__ OS research line: long-term memory, selective forgetting, privacy, stale-memory handling, and action authority.
+See [docs/RESEARCH_CONTEXT.md](docs/RESEARCH_CONTEXT.md).
 
-Historical paper titles are preserved as **research directions**, not represented as published papers unless a DOI/preprint record is later added.
+## Repository structure
+- `memory_governor.py` — executable core
+- `tests/` — deterministic regression tests
+- `docs/` — architecture, research context, evaluation
+- `ROADMAP.md` — next experiments and engineering milestones
+- `CITATION.cff` — citation metadata
+- `.github/workflows/tests.yml` — CI
 
-## Evaluation plan
+## Limitations
+- Heuristic poison detector
+- No encryption-at-rest adapter yet
+- No semantic embeddings yet
+- Not a production identity/access-control system
 
-Stress the governor with stale memories, scope leakage, conflicting updates, adversarial instructions, and supersession chains. Measure unauthorized retrieval, stale-memory reuse, and correct invalidation.
-
-## Current status
-
-**Maturity: reproducible research prototype.** The prototype does not provide encryption, semantic vector retrieval, production authentication, formal privacy guarantees, or a complete prompt-injection defense.
-
-See `STATUS.md` and `docs/research-agenda.md` for the exact claims boundary and next empirical steps.
+## License
+MIT. See [LICENSE](LICENSE).
