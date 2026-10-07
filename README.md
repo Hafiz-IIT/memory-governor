@@ -11,6 +11,8 @@
   <img src="https://img.shields.io/badge/storage-SQLite-informational" alt="SQLite"/>
 </p>
 
+![Architecture](docs/architecture.svg)
+
 ## Research question
 
 **How should an agent decide whether an old memory is still authoritative enough to retrieve and use?**
