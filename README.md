@@ -1,65 +1,72 @@
 # Memory Governor
 
-> Persistent-memory governance layer for AI agents with provenance, scope, sensitivity, expiry, invalidation and auditability.
+<p align="center">
+  <strong>Governed Memory for Long-Lived AI Agents</strong><br/>
+  <sub>Persistent memory with provenance, scope, sensitivity, expiry and explicit forgetting.</sub>
+</p>
 
-## Status
-**Reproducible research prototype.** The repository contains executable Python, deterministic tests, and GitHub Actions CI. It does not claim production deployment or external validation.
+<p align="center">
+  <a href="https://github.com/Hafiz-IIT/memory-governor/actions"><img src="https://img.shields.io/github/actions/workflow/status/Hafiz-IIT/memory-governor/ci.yml?label=CI" alt="CI"/></a>
+  <img src="https://img.shields.io/badge/status-research%20prototype-blue" alt="Research prototype"/>
+  <img src="https://img.shields.io/badge/storage-SQLite-informational" alt="SQLite"/>
+</p>
 
-## Problem
-Long-lived agents can reuse stale, poisoned, over-broad or sensitive memories outside the context in which those memories were valid.
+## Research question
+
+**How should an agent decide whether an old memory is still authoritative enough to retrieve and use?**
+
+The project treats memory as governed state—not as an unlimited transcript.
 
 ## Architecture
-Memory write → poison screen → provenance/scope/sensitivity labels → persistent store → governed retrieval → expiry/forget/supersede → audit.
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component responsibilities and invariants.
-
-## Quick start
-```bash
-python -m unittest discover -s tests -v
-python memory_governor.py
+```
+Write
+ ↓
+Provenance + sensitivity + scope
+ ↓
+Poison / validity checks
+ ↓
+Persistent store
+ ↓
+Governed retrieval
+ ↓
+Expiry / supersede / forget
+ ↓
+Audit trail
 ```
 
-## What is implemented
-- SQLite persistence
-- Scope-aware retrieval
-- Sensitivity filtering
-- TTL expiry
-- Explicit forgetting and supersession
-- Transparent poison-pattern screen
-- Audit log
-- Deterministic tests and CI
+## Try it
 
-## Evaluation
-Tests target cross-scope leakage, stale-memory retrieval, poisoning rejection, supersession correctness, and audit completeness.
+```bash
+python memory_governor.py
+python -m unittest discover -s tests -v
+```
 
-See [docs/EVALUATION.md](docs/EVALUATION.md) for the protocol and falsification criteria.
+The second-stage implementation in `retention_policy.py` adds provenance-aware and age-bounded retrieval on top of the persistent store.
 
-## Research lineage
-This repo is grounded in the recovered long-running research/project discussions and maps to:
-- *Privacy-Preserving Architectures for Consumer Applications*
-- *Human–AI Symbiosis for Future Systems*
-- *Scalable Architectures for Distributed Intelligent Agents*
+## Implemented
 
-See [docs/RESEARCH_CONTEXT.md](docs/RESEARCH_CONTEXT.md).
+- SQLite-backed persistence
+- provenance labels
+- scoped retrieval
+- sensitivity labels
+- TTL / expiry
+- explicit forgetting
+- memory-poison screening
+- audit logging
+- retention-policy layer
+- deterministic tests + CI
 
-## Repository structure
-- `memory_governor.py` — executable core
-- `tests/` — deterministic regression tests
-- `docs/` — architecture, research context, evaluation
-- `ROADMAP.md` — next experiments and engineering milestones
-- `CITATION.cff` — citation metadata
-- `.github/workflows/tests.yml` — CI
+## Design principle
 
-## Limitations
-- Heuristic poison detector
-- No encryption-at-rest adapter yet
-- No semantic embeddings yet
-- Not a production identity/access-control system
+A memory can be **stored without being trusted**. Retrieval policy is therefore separate from persistence.
 
-## License
-MIT. See [LICENSE](LICENSE).
+## Research boundary
 
-## Extended implementation
+No claim is made that this constitutes a production memory-security solution. The repository is an inspectable prototype for experimenting with governance mechanisms.
 
-- `retention_policy.py` — provenance, sensitivity and maximum-age retrieval policy layered over the persistent memory store.
-- `tests/test_retention_policy.py` — retention-policy regression tests.
+Related work: [Agent Evidence Probes](https://github.com/Hafiz-IIT/agent-evidence-probes) · [~haf.s__ OS Core](https://github.com/Hafiz-IIT/hafs-os-core)
+
+## Reproducibility
+
+Start with `tests/` and `docs/ARCHITECTURE.md`. All included tests are deterministic and run in GitHub Actions.
