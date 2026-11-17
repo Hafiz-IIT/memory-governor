@@ -64,6 +64,18 @@ class MemoryGovernorTests(unittest.TestCase):
         g = MemoryGovernor()
         g.remember("normal", scope="x", provenance="user", now=100)
         self.assertEqual(g.retrieve(scope="x", allowed_sensitivities=(), now=101), [])
+        with self.assertRaises(ValueError):
+            g.retrieve(scope="x", allowed_sensitivities="normal", now=101)
+
+    def test_forget_deletes_the_memory_row(self):
+        g = MemoryGovernor()
+        memory_id = g.remember("sensitive memory", scope="x", provenance="user", now=100)
+        g.forget(memory_id, now=101)
+        self.assertEqual(g.retrieve(scope="x", now=102), [])
+        self.assertIsNone(
+            g.db.execute("SELECT id FROM memories WHERE id = ?", (memory_id,)).fetchone()
+        )
+        self.assertEqual(g.audit_events()[-1]["action"], "forget")
 
 
 if __name__ == "__main__":
