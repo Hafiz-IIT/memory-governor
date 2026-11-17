@@ -98,8 +98,10 @@ class MemoryGovernor:
         now: float | None = None,
     ) -> list[MemoryRecord]:
         now = time.time() if now is None else now
-        if not isinstance(scope, str) or not scope.strip() or not math.isfinite(now):
+        if not isinstance(scope, str) or not scope.strip() or not isinstance(now, (int, float)) or isinstance(now, bool) or not math.isfinite(now):
             raise ValueError("scope must be non-empty and now must be finite")
+        if isinstance(allowed_sensitivities, str):
+            raise ValueError("allowed_sensitivities must be an iterable of labels, not a string")
         allowed = tuple(allowed_sensitivities)
         if not allowed:
             with self.db:
@@ -125,13 +127,13 @@ class MemoryGovernor:
 
     def forget(self, memory_id: int, *, now: float | None = None) -> None:
         now = time.time() if now is None else now
-        if not math.isfinite(now):
-            raise ValueError("now must be finite")
+        if not isinstance(now, (int, float)) or isinstance(now, bool) or not math.isfinite(now):
+            raise ValueError("now must be a finite number")
         with self.db:
-            cur = self.db.execute("UPDATE memories SET valid = 0 WHERE id = ? AND valid = 1", (memory_id,))
+            cur = self.db.execute("DELETE FROM memories WHERE id = ? AND valid = 1", (memory_id,))
             if cur.rowcount != 1:
                 raise KeyError(memory_id)
-            self._audit("forget", memory_id, "explicit invalidation", now)
+            self._audit("forget", memory_id, "memory row deleted; secure physical erasure is not guaranteed", now)
 
     def supersede(
         self,
