@@ -75,7 +75,7 @@ class MemoryGovernorTests(unittest.TestCase):
         self.assertIsNone(
             g.db.execute("SELECT id FROM memories WHERE id = ?", (memory_id,)).fetchone()
         )
-        self.assertEqual(g.audit_events()[-1]["action"], "forget")
+        self.assertTrue(any(event["action"] == "forget" and event["memory_id"] == memory_id for event in g.audit_events()))
 
 
 if __name__ == "__main__":
