@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 import sqlite3
 import time
 from typing import Iterable
@@ -71,20 +72,22 @@ class MemoryGovernor:
         reject_poisoned: bool = True,
     ) -> int:
         now = time.time() if now is None else now
+        self._validate_record(text, scope, provenance, sensitivity, now, ttl_seconds)
         if reject_poisoned and self.looks_poisoned(text):
-            self._audit("reject", None, "memory rejected by poison screen", now)
+            with self.db:
+                self._audit("reject", None, "memory rejected by poison screen", now)
             raise ValueError("memory rejected by poison screen")
 
         expires_at = None if ttl_seconds is None else now + ttl_seconds
-        cur = self.db.execute(
-            """INSERT INTO memories
-               (text, scope, provenance, sensitivity, created_at, expires_at, valid)
-               VALUES (?, ?, ?, ?, ?, ?, 1)""",
-            (text, scope, provenance, sensitivity, now, expires_at),
-        )
-        memory_id = int(cur.lastrowid)
-        self._audit("write", memory_id, provenance, now)
-        self.db.commit()
+        with self.db:
+            cur = self.db.execute(
+                """INSERT INTO memories
+                   (text, scope, provenance, sensitivity, created_at, expires_at, valid)
+                   VALUES (?, ?, ?, ?, ?, ?, 1)""",
+                (text, scope, provenance, sensitivity, now, expires_at),
+            )
+            memory_id = int(cur.lastrowid)
+            self._audit("write", memory_id, provenance, now)
         return memory_id
 
     def retrieve(
@@ -95,7 +98,15 @@ class MemoryGovernor:
         now: float | None = None,
     ) -> list[MemoryRecord]:
         now = time.time() if now is None else now
+        if not isinstance(scope, str) or not scope.strip() or not math.isfinite(now):
+            raise ValueError("scope must be non-empty and now must be finite")
         allowed = tuple(allowed_sensitivities)
+        if not allowed:
+            with self.db:
+                self._audit("retrieve", None, f"{scope}:0:no_allowed_sensitivities", now)
+            return []
+        if any(not isinstance(item, str) or not item.strip() for item in allowed):
+            raise ValueError("allowed sensitivities must be non-empty strings")
         placeholders = ",".join("?" for _ in allowed)
         rows = self.db.execute(
             f"""SELECT * FROM memories
@@ -108,15 +119,19 @@ class MemoryGovernor:
         ).fetchall()
 
         records = [self._row_to_record(row) for row in rows]
-        self._audit("retrieve", None, f"{scope}:{len(records)}", now)
-        self.db.commit()
+        with self.db:
+            self._audit("retrieve", None, f"{scope}:{len(records)}", now)
         return records
 
     def forget(self, memory_id: int, *, now: float | None = None) -> None:
         now = time.time() if now is None else now
-        self.db.execute("UPDATE memories SET valid = 0 WHERE id = ?", (memory_id,))
-        self._audit("forget", memory_id, "explicit invalidation", now)
-        self.db.commit()
+        if not math.isfinite(now):
+            raise ValueError("now must be finite")
+        with self.db:
+            cur = self.db.execute("UPDATE memories SET valid = 0 WHERE id = ? AND valid = 1", (memory_id,))
+            if cur.rowcount != 1:
+                raise KeyError(memory_id)
+            self._audit("forget", memory_id, "explicit invalidation", now)
 
     def supersede(
         self,
@@ -127,16 +142,60 @@ class MemoryGovernor:
         provenance: str,
         sensitivity: str = "normal",
         now: float | None = None,
+        ttl_seconds: float | None = None,
+        reject_poisoned: bool = True,
     ) -> int:
         now = time.time() if now is None else now
-        self.forget(old_memory_id, now=now)
-        return self.remember(
-            new_text,
-            scope=scope,
-            provenance=provenance,
-            sensitivity=sensitivity,
-            now=now,
-        )
+        self._validate_record(new_text, scope, provenance, sensitivity, now, ttl_seconds)
+        if reject_poisoned and self.looks_poisoned(new_text):
+            with self.db:
+                self._audit("reject", old_memory_id, "supersede rejected by poison screen", now)
+            raise ValueError("memory rejected by poison screen")
+
+        expires_at = None if ttl_seconds is None else now + ttl_seconds
+        # Invalidate the old row and insert its replacement in one transaction.
+        # Any validation, lookup, insert, or audit failure rolls the whole change back.
+        with self.db:
+            old = self.db.execute(
+                "SELECT scope FROM memories WHERE id = ? AND valid = 1",
+                (old_memory_id,),
+            ).fetchone()
+            if old is None or old["scope"] != scope:
+                raise KeyError(old_memory_id)
+            cur = self.db.execute(
+                "UPDATE memories SET valid = 0 WHERE id = ? AND valid = 1",
+                (old_memory_id,),
+            )
+            if cur.rowcount != 1:
+                raise RuntimeError("memory changed during supersede")
+            self._audit("supersede", old_memory_id, "replaced atomically", now)
+            cur = self.db.execute(
+                """INSERT INTO memories
+                   (text, scope, provenance, sensitivity, created_at, expires_at, valid)
+                   VALUES (?, ?, ?, ?, ?, ?, 1)""",
+                (new_text, scope, provenance, sensitivity, now, expires_at),
+            )
+            new_memory_id = int(cur.lastrowid)
+            self._audit("write", new_memory_id, provenance, now)
+        return new_memory_id
+
+    @staticmethod
+    def _validate_record(
+        text: str, scope: str, provenance: str, sensitivity: str,
+        now: float, ttl_seconds: float | None,
+    ) -> None:
+        if any(not isinstance(value, str) or not value.strip()
+               for value in (text, scope, provenance, sensitivity)):
+            raise ValueError("text, scope, provenance and sensitivity must be non-empty strings")
+        if not math.isfinite(now):
+            raise ValueError("now must be finite")
+        if ttl_seconds is not None and (
+            not isinstance(ttl_seconds, (int, float))
+            or isinstance(ttl_seconds, bool)
+            or not math.isfinite(ttl_seconds)
+            or ttl_seconds < 0
+        ):
+            raise ValueError("ttl_seconds must be finite and non-negative")
 
     def audit_events(self) -> list[dict]:
         return [dict(row) for row in self.db.execute("SELECT * FROM audit ORDER BY id")]
