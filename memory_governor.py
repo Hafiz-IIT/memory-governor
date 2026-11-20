@@ -155,9 +155,10 @@ class MemoryGovernor:
                 WHERE scope = ?
                   AND valid = 1
                   AND sensitivity IN ({placeholders})
-                  AND (expires_at IS NULL OR expires_at >= ?)
+                  AND created_at <= ?
+                  AND (expires_at IS NULL OR expires_at > ?)
                 ORDER BY created_at DESC, id DESC""",
-            (scope, *allowed, now),
+            (scope, *allowed, now, now),
         ).fetchall()
         records = [self._row_to_record(row) for row in rows]
         with self.db:
