@@ -36,7 +36,10 @@ class RetentionPolicy:
             return False
         if record.sensitivity not in self.allowed_sensitivities:
             return False
-        if self.max_age_seconds is not None and now - record.created_at > self.max_age_seconds:
+        age = now - record.created_at
+        if age < 0:
+            return False
+        if self.max_age_seconds is not None and age > self.max_age_seconds:
             return False
         return record.valid
 
