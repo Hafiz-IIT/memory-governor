@@ -35,6 +35,11 @@ class MemoryGovernorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             g.retrieve(scope="x", allowed_sensitivities=(), now=100)
 
+    def test_future_dated_memory_is_not_retrieved(self):
+        g = MemoryGovernor()
+        g.remember("future", scope="x", provenance="test", now=200)
+        self.assertEqual(g.retrieve(scope="x", now=100), [])
+
     def test_nonfinite_retrieval_time_rejected(self):
         g = MemoryGovernor()
         with self.assertRaises(ValueError):
