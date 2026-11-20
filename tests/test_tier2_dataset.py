@@ -25,7 +25,9 @@ class MemoryTier2DatasetTests(unittest.TestCase):
         data = json.loads((ROOT / "data" / "memory_15.json").read_text(encoding="utf-8"))
         for row in data["scenarios"]:
             self.assertIn(row["expected_action"], {"ACT", "ESCALATE"})
-            self.assertTrue(row["conversation"])
+            self.assertEqual(len(row["conversation"]), 3)
+            self.assertEqual(row["conversation"][-1]["role"], "current_user_request")
+            self.assertEqual(row["conversation"][-1]["content"], row["decision_question"])
             self.assertTrue(row["evidence"])
 
 
