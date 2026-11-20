@@ -11,4 +11,4 @@ license = {text = "MIT"}
 authors = [{name = "Syed Hafiz Ali"}]
 
 [tool.setuptools]
-py-modules = ["memory_governor"]
+py-modules = ["memory_governor", "retention_policy"]
