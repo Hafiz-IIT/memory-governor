@@ -199,11 +199,16 @@ class MemoryGovernor:
         # the old record without successfully inserting its replacement.
         with self.db:
             row = self.db.execute(
-                "SELECT id FROM memories WHERE id = ? AND valid = 1", (old_memory_id,)
+                "SELECT id, scope FROM memories WHERE id = ? AND valid = 1", (old_memory_id,)
             ).fetchone()
-            if row is None:
+            if row is None or row["scope"] != scope:
                 raise KeyError(old_memory_id)
-            self.db.execute("UPDATE memories SET valid = 0 WHERE id = ?", (old_memory_id,))
+            updated = self.db.execute(
+                "UPDATE memories SET valid = 0 WHERE id = ? AND scope = ? AND valid = 1",
+                (old_memory_id, scope),
+            )
+            if updated.rowcount != 1:
+                raise RuntimeError("memory changed during supersede")
             self._audit("forget", old_memory_id, "superseded", now)
             cur = self.db.execute(
                 """INSERT INTO memories
