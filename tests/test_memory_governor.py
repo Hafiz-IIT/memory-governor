@@ -45,6 +45,14 @@ class MemoryGovernorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             g.retrieve(scope="x", now=float("nan"))
 
+    def test_supersede_cannot_move_memory_across_scopes(self):
+        g = MemoryGovernor()
+        old = g.remember("private memory", scope="private", provenance="user", now=100)
+        with self.assertRaises(KeyError):
+            g.supersede(old, "public copy", scope="public", provenance="user", now=101)
+        self.assertEqual([m.text for m in g.retrieve(scope="private", now=102)], ["private memory"])
+        self.assertEqual(g.retrieve(scope="public", now=102), [])
+
     def test_supersede_is_atomic_when_replacement_is_rejected(self):
         g = MemoryGovernor()
         old = g.remember("trusted old memory", scope="x", provenance="user", now=100)
