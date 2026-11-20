@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "title": "Memory Governance Domain Scenarios",
   "count": 15,
-  "source_note": "Authored synthetic cases based on the repository's scope, provenance, sensitivity, expiry, forgetting, poisoning and audit mechanisms; not real user memories.",
+  "source_note": "Authored synthetic cases based on the repository's scope, provenance, sensitivity, expiry, forgetting, poisoning and audit mechanisms; not real user memories. Every scenario includes an explicit evaluation_mechanism; domain datasets are contextual synthetic cases and do not claim execution of domain-specific policy logic.",
   "scenarios": [
     {
       "id": "MEM-001",
@@ -16,23 +16,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_source_a",
+          "source": "source_a",
           "confidence": 0.97,
           "age_seconds": 20,
           "ttl_seconds": 3600,
-          "independent_group": "independent_a"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "supported",
-          "source": "memory_source_b",
+          "source": "source_b",
           "confidence": 0.96,
           "age_seconds": 35,
           "ttl_seconds": 3600,
-          "independent_group": "independent_b"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ACT",
-      "rationale": "Expected ACT: Fresh memory from an allowed provenance and matching scope is eligible for retrieval."
+      "rationale": "Expected ACT: Fresh memory from an allowed provenance and matching scope is eligible for retrieval.",
+      "evaluation_mechanism": "fresh_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-002",
@@ -46,23 +48,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_source_a",
+          "source": "source_a",
           "confidence": 0.97,
-          "age_seconds": 21,
+          "age_seconds": 20,
           "ttl_seconds": 3600,
-          "independent_group": "independent_a"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "supported",
-          "source": "memory_source_b",
+          "source": "source_b",
           "confidence": 0.96,
-          "age_seconds": 36,
+          "age_seconds": 35,
           "ttl_seconds": 3600,
-          "independent_group": "independent_b"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ACT",
-      "rationale": "Expected ACT: Explicit user-provided preference is within allowed sensitivity and provenance."
+      "rationale": "Expected ACT: Explicit user-provided preference is within allowed sensitivity and provenance.",
+      "evaluation_mechanism": "fresh_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-003",
@@ -76,23 +80,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_source_a",
+          "source": "source_a",
           "confidence": 0.97,
-          "age_seconds": 22,
+          "age_seconds": 20,
           "ttl_seconds": 3600,
-          "independent_group": "independent_a"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "supported",
-          "source": "memory_source_b",
+          "source": "source_b",
           "confidence": 0.96,
-          "age_seconds": 37,
+          "age_seconds": 35,
           "ttl_seconds": 3600,
-          "independent_group": "independent_b"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ACT",
-      "rationale": "Expected ACT: Memory is valid, in scope, allowed sensitivity and within retention age."
+      "rationale": "Expected ACT: Memory is valid, in scope, allowed sensitivity and within retention age.",
+      "evaluation_mechanism": "fresh_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-004",
@@ -106,23 +112,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_source_a",
+          "source": "source_a",
           "confidence": 0.97,
-          "age_seconds": 23,
+          "age_seconds": 20,
           "ttl_seconds": 3600,
-          "independent_group": "independent_a"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "supported",
-          "source": "memory_source_b",
+          "source": "source_b",
           "confidence": 0.96,
-          "age_seconds": 38,
+          "age_seconds": 35,
           "ttl_seconds": 3600,
-          "independent_group": "independent_b"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ACT",
-      "rationale": "Expected ACT: Current replacement memory is valid and the old record is invalidated."
+      "rationale": "Expected ACT: Current replacement memory is valid and the old record is invalidated.",
+      "evaluation_mechanism": "fresh_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-005",
@@ -136,23 +144,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_source_a",
+          "source": "source_a",
           "confidence": 0.97,
-          "age_seconds": 24,
+          "age_seconds": 20,
           "ttl_seconds": 3600,
-          "independent_group": "independent_a"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "supported",
-          "source": "memory_source_b",
+          "source": "source_b",
           "confidence": 0.96,
-          "age_seconds": 39,
+          "age_seconds": 35,
           "ttl_seconds": 3600,
-          "independent_group": "independent_b"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ACT",
-      "rationale": "Expected ACT: Eligible memory retrieval produces an audit event."
+      "rationale": "Expected ACT: Eligible memory retrieval produces an audit event.",
+      "evaluation_mechanism": "fresh_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-006",
@@ -166,15 +176,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_single_source",
-          "confidence": 0.65,
-          "age_seconds": 25,
+          "source": "weak_a",
+          "confidence": 0.35,
+          "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "single"
+          "independent_group": "lineage_a"
+        },
+        {
+          "claim": "supported",
+          "source": "weak_b",
+          "confidence": 0.3,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "VERIFY",
-      "rationale": "Expected VERIFY: Memory belongs to a different scope and should not be used without review."
+      "rationale": "Expected VERIFY: Memory belongs to a different scope and should not be used without review.",
+      "evaluation_mechanism": "weak_independent_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-007",
@@ -188,15 +208,17 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_single_source",
-          "confidence": 0.65,
-          "age_seconds": 26,
+          "source": "single_source",
+          "confidence": 0.99,
+          "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "single"
+          "independent_group": "single_lineage"
         }
       ],
       "expected_action": "VERIFY",
-      "rationale": "Expected VERIFY: Memory provenance is not in the allowed provenance set."
+      "rationale": "Expected VERIFY: Memory provenance is not in the allowed provenance set.",
+      "evaluation_mechanism": "single_source_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-008",
@@ -210,15 +232,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_single_source",
-          "confidence": 0.65,
-          "age_seconds": 27,
+          "source": "stale_a",
+          "confidence": 0.99,
+          "age_seconds": 7200,
           "ttl_seconds": 3600,
-          "independent_group": "single"
+          "independent_group": "lineage_a"
+        },
+        {
+          "claim": "supported",
+          "source": "stale_b",
+          "confidence": 0.98,
+          "age_seconds": 7300,
+          "ttl_seconds": 3600,
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "VERIFY",
-      "rationale": "Expected VERIFY: Memory is older than the configured maximum age."
+      "rationale": "Expected VERIFY: Memory is older than the configured maximum age.",
+      "evaluation_mechanism": "stale_evidence",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-009",
@@ -232,15 +264,17 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_single_source",
-          "confidence": 0.65,
-          "age_seconds": 28,
+          "source": "single_source",
+          "confidence": 0.99,
+          "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "single"
+          "independent_group": "single_lineage"
         }
       ],
       "expected_action": "VERIFY",
-      "rationale": "Expected VERIFY: Memory sensitivity is outside the current retrieval policy."
+      "rationale": "Expected VERIFY: Memory sensitivity is outside the current retrieval policy.",
+      "evaluation_mechanism": "single_source_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-010",
@@ -254,15 +288,17 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_single_source",
-          "confidence": 0.65,
-          "age_seconds": 29,
+          "source": "single_source",
+          "confidence": 0.99,
+          "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "single"
+          "independent_group": "single_lineage"
         }
       ],
       "expected_action": "VERIFY",
-      "rationale": "Expected VERIFY: Memory is at the expiry boundary and requires exact time validation."
+      "rationale": "Expected VERIFY: Memory is at the expiry boundary and requires exact time validation.",
+      "evaluation_mechanism": "single_source_support",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-011",
@@ -276,23 +312,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_primary",
+          "source": "trusted_source_a",
           "confidence": 0.98,
           "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "primary"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "contradicted",
-          "source": "memory_integrity_or_authority",
+          "source": "trusted_source_b",
           "confidence": 0.97,
           "age_seconds": 12,
           "ttl_seconds": 3600,
-          "independent_group": "independent_check"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ESCALATE",
-      "rationale": "Expected ESCALATE: Stored text attempts to override prior instructions or bypass safeguards."
+      "rationale": "Expected ESCALATE: Stored text attempts to override prior instructions or bypass safeguards.",
+      "evaluation_mechanism": "fresh_conflicting_claims",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-012",
@@ -306,23 +344,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_primary",
+          "source": "trusted_source_a",
           "confidence": 0.98,
           "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "primary"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "contradicted",
-          "source": "memory_integrity_or_authority",
+          "source": "trusted_source_b",
           "confidence": 0.97,
           "age_seconds": 12,
           "ttl_seconds": 3600,
-          "independent_group": "independent_check"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ESCALATE",
-      "rationale": "Expected ESCALATE: A record marked invalid through explicit forgetting is proposed for retrieval."
+      "rationale": "Expected ESCALATE: A record marked invalid through explicit forgetting is proposed for retrieval.",
+      "evaluation_mechanism": "fresh_conflicting_claims",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-013",
@@ -336,23 +376,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_primary",
+          "source": "trusted_source_a",
           "confidence": 0.98,
           "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "primary"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "contradicted",
-          "source": "memory_integrity_or_authority",
+          "source": "trusted_source_b",
           "confidence": 0.97,
           "age_seconds": 12,
           "ttl_seconds": 3600,
-          "independent_group": "independent_check"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ESCALATE",
-      "rationale": "Expected ESCALATE: Untrusted input claims trusted provenance without supporting lineage."
+      "rationale": "Expected ESCALATE: Untrusted input claims trusted provenance without supporting lineage.",
+      "evaluation_mechanism": "fresh_conflicting_claims",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-014",
@@ -366,23 +408,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_primary",
+          "source": "trusted_source_a",
           "confidence": 0.98,
           "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "primary"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "contradicted",
-          "source": "memory_integrity_or_authority",
+          "source": "trusted_source_b",
           "confidence": 0.97,
           "age_seconds": 12,
           "ttl_seconds": 3600,
-          "independent_group": "independent_check"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ESCALATE",
-      "rationale": "Expected ESCALATE: Memory from another tenant or user scope is proposed for retrieval."
+      "rationale": "Expected ESCALATE: Memory from another tenant or user scope is proposed for retrieval.",
+      "evaluation_mechanism": "fresh_conflicting_claims",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     },
     {
       "id": "MEM-015",
@@ -396,23 +440,25 @@
       "evidence": [
         {
           "claim": "supported",
-          "source": "memory_primary",
+          "source": "trusted_source_a",
           "confidence": 0.98,
           "age_seconds": 10,
           "ttl_seconds": 3600,
-          "independent_group": "primary"
+          "independent_group": "lineage_a"
         },
         {
           "claim": "contradicted",
-          "source": "memory_integrity_or_authority",
+          "source": "trusted_source_b",
           "confidence": 0.97,
           "age_seconds": 12,
           "ttl_seconds": 3600,
-          "independent_group": "independent_check"
+          "independent_group": "lineage_b"
         }
       ],
       "expected_action": "ESCALATE",
-      "rationale": "Expected ESCALATE: Audit evidence for a sensitive memory operation is missing or tampered."
+      "rationale": "Expected ESCALATE: Audit evidence for a sensitive memory operation is missing or tampered.",
+      "evaluation_mechanism": "fresh_conflicting_claims",
+      "domain_evaluation_scope": "Generic evidence-gating abstraction only; domain-specific EXIM or memory policy code is not invoked by this runner."
     }
   ]
 }
