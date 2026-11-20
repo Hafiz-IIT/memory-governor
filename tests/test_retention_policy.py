@@ -5,15 +5,17 @@ from retention_policy import RetentionPolicy, governed_retrieve
 
 
 class RetentionPolicyTests(unittest.TestCase):
-    def test_future_dated_record_fails_retention_policy(self):
+    def test_future_created_record_is_not_retained(self):
         g = MemoryGovernor()
         g.remember("future", scope="x", provenance="user", now=200)
-        policy = RetentionPolicy(max_age_seconds=50)
-        self.assertEqual(governed_retrieve(g, scope="x", policy=policy, now=100), [])
+        rows = governed_retrieve(g, scope="x", policy=RetentionPolicy(), now=100)
+        self.assertEqual(rows, [])
 
-    def test_negative_max_age_is_rejected(self):
+    def test_invalid_retention_bounds_rejected(self):
         with self.assertRaises(ValueError):
             RetentionPolicy(max_age_seconds=-1)
+        with self.assertRaises(ValueError):
+            RetentionPolicy(allowed_sensitivities=())
 
     def test_provenance_filter(self):
         g = MemoryGovernor()
