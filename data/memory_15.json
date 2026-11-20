@@ -1,0 +1,418 @@
+{
+  "schema_version": "1.0",
+  "title": "Memory Governance Domain Scenarios",
+  "count": 15,
+  "source_note": "Authored synthetic cases based on the repository's scope, provenance, sensitivity, expiry, forgetting, poisoning and audit mechanisms; not real user memories.",
+  "scenarios": [
+    {
+      "id": "MEM-001",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "scope",
+      "name": "scoped_fresh_memory",
+      "description": "Fresh memory from an allowed provenance and matching scope is eligible for retrieval.",
+      "target_claim": "supported",
+      "risk_level": "LOW",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_source_a",
+          "confidence": 0.97,
+          "age_seconds": 20,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_a"
+        },
+        {
+          "claim": "supported",
+          "source": "memory_source_b",
+          "confidence": 0.96,
+          "age_seconds": 35,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_b"
+        }
+      ],
+      "expected_action": "ACT",
+      "rationale": "Expected ACT: Fresh memory from an allowed provenance and matching scope is eligible for retrieval."
+    },
+    {
+      "id": "MEM-002",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "provenance",
+      "name": "explicit_user_preference",
+      "description": "Explicit user-provided preference is within allowed sensitivity and provenance.",
+      "target_claim": "supported",
+      "risk_level": "LOW",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_source_a",
+          "confidence": 0.97,
+          "age_seconds": 21,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_a"
+        },
+        {
+          "claim": "supported",
+          "source": "memory_source_b",
+          "confidence": 0.96,
+          "age_seconds": 36,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_b"
+        }
+      ],
+      "expected_action": "ACT",
+      "rationale": "Expected ACT: Explicit user-provided preference is within allowed sensitivity and provenance."
+    },
+    {
+      "id": "MEM-003",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "retention",
+      "name": "valid_non_expired_memory",
+      "description": "Memory is valid, in scope, allowed sensitivity and within retention age.",
+      "target_claim": "supported",
+      "risk_level": "LOW",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_source_a",
+          "confidence": 0.97,
+          "age_seconds": 22,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_a"
+        },
+        {
+          "claim": "supported",
+          "source": "memory_source_b",
+          "confidence": 0.96,
+          "age_seconds": 37,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_b"
+        }
+      ],
+      "expected_action": "ACT",
+      "rationale": "Expected ACT: Memory is valid, in scope, allowed sensitivity and within retention age."
+    },
+    {
+      "id": "MEM-004",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "supersession",
+      "name": "current_superseding_record",
+      "description": "Current replacement memory is valid and the old record is invalidated.",
+      "target_claim": "supported",
+      "risk_level": "LOW",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_source_a",
+          "confidence": 0.97,
+          "age_seconds": 23,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_a"
+        },
+        {
+          "claim": "supported",
+          "source": "memory_source_b",
+          "confidence": 0.96,
+          "age_seconds": 38,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_b"
+        }
+      ],
+      "expected_action": "ACT",
+      "rationale": "Expected ACT: Current replacement memory is valid and the old record is invalidated."
+    },
+    {
+      "id": "MEM-005",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "audit",
+      "name": "audited_memory_retrieval",
+      "description": "Eligible memory retrieval produces an audit event.",
+      "target_claim": "supported",
+      "risk_level": "LOW",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_source_a",
+          "confidence": 0.97,
+          "age_seconds": 24,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_a"
+        },
+        {
+          "claim": "supported",
+          "source": "memory_source_b",
+          "confidence": 0.96,
+          "age_seconds": 39,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_b"
+        }
+      ],
+      "expected_action": "ACT",
+      "rationale": "Expected ACT: Eligible memory retrieval produces an audit event."
+    },
+    {
+      "id": "MEM-006",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "scope",
+      "name": "scope_mismatch",
+      "description": "Memory belongs to a different scope and should not be used without review.",
+      "target_claim": "supported",
+      "risk_level": "MEDIUM",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_single_source",
+          "confidence": 0.65,
+          "age_seconds": 25,
+          "ttl_seconds": 3600,
+          "independent_group": "single"
+        }
+      ],
+      "expected_action": "VERIFY",
+      "rationale": "Expected VERIFY: Memory belongs to a different scope and should not be used without review."
+    },
+    {
+      "id": "MEM-007",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "provenance",
+      "name": "unknown_provenance",
+      "description": "Memory provenance is not in the allowed provenance set.",
+      "target_claim": "supported",
+      "risk_level": "MEDIUM",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_single_source",
+          "confidence": 0.65,
+          "age_seconds": 26,
+          "ttl_seconds": 3600,
+          "independent_group": "single"
+        }
+      ],
+      "expected_action": "VERIFY",
+      "rationale": "Expected VERIFY: Memory provenance is not in the allowed provenance set."
+    },
+    {
+      "id": "MEM-008",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "retention",
+      "name": "age_limit_exceeded",
+      "description": "Memory is older than the configured maximum age.",
+      "target_claim": "supported",
+      "risk_level": "MEDIUM",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_single_source",
+          "confidence": 0.65,
+          "age_seconds": 27,
+          "ttl_seconds": 3600,
+          "independent_group": "single"
+        }
+      ],
+      "expected_action": "VERIFY",
+      "rationale": "Expected VERIFY: Memory is older than the configured maximum age."
+    },
+    {
+      "id": "MEM-009",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "sensitivity",
+      "name": "sensitivity_not_allowed",
+      "description": "Memory sensitivity is outside the current retrieval policy.",
+      "target_claim": "supported",
+      "risk_level": "MEDIUM",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_single_source",
+          "confidence": 0.65,
+          "age_seconds": 28,
+          "ttl_seconds": 3600,
+          "independent_group": "single"
+        }
+      ],
+      "expected_action": "VERIFY",
+      "rationale": "Expected VERIFY: Memory sensitivity is outside the current retrieval policy."
+    },
+    {
+      "id": "MEM-010",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "validity",
+      "name": "expiry_boundary",
+      "description": "Memory is at the expiry boundary and requires exact time validation.",
+      "target_claim": "supported",
+      "risk_level": "MEDIUM",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_single_source",
+          "confidence": 0.65,
+          "age_seconds": 29,
+          "ttl_seconds": 3600,
+          "independent_group": "single"
+        }
+      ],
+      "expected_action": "VERIFY",
+      "rationale": "Expected VERIFY: Memory is at the expiry boundary and requires exact time validation."
+    },
+    {
+      "id": "MEM-011",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "poisoning",
+      "name": "instruction_injection_memory",
+      "description": "Stored text attempts to override prior instructions or bypass safeguards.",
+      "target_claim": "supported",
+      "risk_level": "HIGH",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_primary",
+          "confidence": 0.98,
+          "age_seconds": 10,
+          "ttl_seconds": 3600,
+          "independent_group": "primary"
+        },
+        {
+          "claim": "contradicted",
+          "source": "memory_integrity_or_authority",
+          "confidence": 0.97,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_check"
+        }
+      ],
+      "expected_action": "ESCALATE",
+      "rationale": "Expected ESCALATE: Stored text attempts to override prior instructions or bypass safeguards."
+    },
+    {
+      "id": "MEM-012",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "validity",
+      "name": "explicitly_forgotten_memory",
+      "description": "A record marked invalid through explicit forgetting is proposed for retrieval.",
+      "target_claim": "supported",
+      "risk_level": "HIGH",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_primary",
+          "confidence": 0.98,
+          "age_seconds": 10,
+          "ttl_seconds": 3600,
+          "independent_group": "primary"
+        },
+        {
+          "claim": "contradicted",
+          "source": "memory_integrity_or_authority",
+          "confidence": 0.97,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_check"
+        }
+      ],
+      "expected_action": "ESCALATE",
+      "rationale": "Expected ESCALATE: A record marked invalid through explicit forgetting is proposed for retrieval."
+    },
+    {
+      "id": "MEM-013",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "provenance",
+      "name": "forged_provenance_label",
+      "description": "Untrusted input claims trusted provenance without supporting lineage.",
+      "target_claim": "supported",
+      "risk_level": "HIGH",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_primary",
+          "confidence": 0.98,
+          "age_seconds": 10,
+          "ttl_seconds": 3600,
+          "independent_group": "primary"
+        },
+        {
+          "claim": "contradicted",
+          "source": "memory_integrity_or_authority",
+          "confidence": 0.97,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_check"
+        }
+      ],
+      "expected_action": "ESCALATE",
+      "rationale": "Expected ESCALATE: Untrusted input claims trusted provenance without supporting lineage."
+    },
+    {
+      "id": "MEM-014",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "scope",
+      "name": "cross_tenant_memory_reuse",
+      "description": "Memory from another tenant or user scope is proposed for retrieval.",
+      "target_claim": "supported",
+      "risk_level": "HIGH",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_primary",
+          "confidence": 0.98,
+          "age_seconds": 10,
+          "ttl_seconds": 3600,
+          "independent_group": "primary"
+        },
+        {
+          "claim": "contradicted",
+          "source": "memory_integrity_or_authority",
+          "confidence": 0.97,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_check"
+        }
+      ],
+      "expected_action": "ESCALATE",
+      "rationale": "Expected ESCALATE: Memory from another tenant or user scope is proposed for retrieval."
+    },
+    {
+      "id": "MEM-015",
+      "tier": "tier1_domain_synthetic",
+      "domain": "memory",
+      "category": "audit",
+      "name": "missing_audit_integrity",
+      "description": "Audit evidence for a sensitive memory operation is missing or tampered.",
+      "target_claim": "supported",
+      "risk_level": "HIGH",
+      "evidence": [
+        {
+          "claim": "supported",
+          "source": "memory_primary",
+          "confidence": 0.98,
+          "age_seconds": 10,
+          "ttl_seconds": 3600,
+          "independent_group": "primary"
+        },
+        {
+          "claim": "contradicted",
+          "source": "memory_integrity_or_authority",
+          "confidence": 0.97,
+          "age_seconds": 12,
+          "ttl_seconds": 3600,
+          "independent_group": "independent_check"
+        }
+      ],
+      "expected_action": "ESCALATE",
+      "rationale": "Expected ESCALATE: Audit evidence for a sensitive memory operation is missing or tampered."
+    }
+  ]
+}
