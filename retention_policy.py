@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 from memory_governor import MemoryGovernor, MemoryRecord
 
@@ -11,10 +12,17 @@ class RetentionPolicy:
     allowed_sensitivities: tuple[str, ...] = ("normal",)
     max_age_seconds: float | None = None
 
+    def __post_init__(self) -> None:
+        if self.max_age_seconds is not None:
+            if not math.isfinite(float(self.max_age_seconds)) or self.max_age_seconds < 0:
+                raise ValueError("max_age_seconds must be finite and non-negative")
+
     def allows(self, record: MemoryRecord, *, now: float) -> bool:
         if self.allowed_provenances is not None and record.provenance not in self.allowed_provenances:
             return False
         if record.sensitivity not in self.allowed_sensitivities:
+            return False
+        if record.created_at > now:
             return False
         if self.max_age_seconds is not None and now - record.created_at > self.max_age_seconds:
             return False
